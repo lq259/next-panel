@@ -1,39 +1,42 @@
-LXPanel is a lightweight X11 desktop panel.
+# Next-panel is a lightweight X11 desktop panel.
 
-To build this program you need some development packages:
-  libtool 2.2 or newer, intltool, pkg-config, libx11, libglib 2.22 or newer,
-  libgtk 2.18 or newer, libfm-gtk 1.2 or newer, libwnck, libkeybinder.
+## Compiling
+To build this program you need these development packages:
+  `libtool` 2.2 or newer, `intltool`, `pkg-config`, `libx11`, `libglib` 2.22 or newer,
+  `libgtk` 2.18 or newer, `libfm-gtk` 1.2 or newer, `libwnck`, and `libkeybinder`.
 Optional development packages may be required to build some modules:
-  libmenu-cache,
-  libasound2 (required to build 'volume' plugin for ALSA),
-  libiw (required to build 'netstat' plugin),
-  libxml-2.0, libcurl (required to build 'weather' plugin).
-  libgtk 2.20 or newer (required to build 'xkb' plugin).
-  libindicator 0.3.0 ('indicator' plugin isn't built if missing),
+  `libmenu-cache`,
+  `libasound2` (required to build 'volume' plugin for ALSA),
+  `libiw` (required to build 'netstat' plugin),
+  `libxml-2.0`, libcurl (required to build 'weather' plugin).
+  `libgtk` 2.20 or newer (required to build 'xkb' plugin).
+  `libindicator` 0.3.0 ('indicator' plugin isn't built if missing),
 
 Configure and make:
-
+```
   ./configure                    # (run './configure --help' for more details)
   make
-
+```
 To install this program, three other packages are needed:
-  menu-cache, libfm-gtk, lxmenu-data.
+  `menu-cache`, `libfm-gtk`, `lxmenu-data`.
 Please install them before installing lxpanel.
 
-There are 2 programs contained in the package.
+### There are 2 programs contained in this package.
 
-1. lxpanel: the panel
+1. next-panel: the panel
 
-2. lxpanelctl: the controller of lxpanel, can be used to control lxpanel in 
-               other programs.  The best place to use lxpanelctl is by far 
-               the numerous key bindings provided by window managers.
-               When the key combination is pressed, call lxpanelctl to popup
-               system menu, or to open run dialog in lxpanel.
-               Run lxpanelctl without any argument to see what command it 
-               currently recognizes.
+2. next-panelctl:
+   
+   the controller of next-panel, can be used to control next-panel in 
+   other programs.  The best place to use `next-panelctl` is by far 
+   the numerous key bindings provided by window managers.
+   When the key combination is pressed, call `next-panelctl` to popup
+   system menu, or to open run dialog in `next-panel`.
+   Run `next-panelctl` without any argument to see what command it 
+   currently recognizes.
 
 
-About Netstat and Netstatus plugins:
+### About Netstat and Netstatus plugins:
 
 1. netstatus was ported from netstatus panel applet of GNOME Project.  This
    plugin has good support on Linux/BSD/other UNIX, and it is released under
@@ -44,9 +47,9 @@ About Netstat and Netstatus plugins:
    efficient.  At the current stage, netstat runs only on Linux.
 
 
-About theming & lxpanel:
+### About theming & next-panel:
 
-1. LXPanel tries to use as much themed icons as possible.  Fallback icons
+1. Next-Panel tries to use as much themed icons as possible.  Fallback icons
    may be also provided if they are placed into $(datadir)/lxpanel/images
    directory.  Few plugins already provide their fallback icons.
 
@@ -69,12 +72,12 @@ There are also a substantial amount of others, but they use the icon naming spec
 3. You can also set theme for any plugin specifically using it's widget name
     which is equal to plugin type.
 
-4. There is a specific RC file which can be loaded by LXPanel, it can be placed
+4. There is a specific RC file which can be loaded by Next-Panel, it can be placed
     as ~/.config/lxpanel/$PROFILE/gtkrc, where $PROFILE is the profile used on
     the LXPanel start.
 
 
-About keyboard options translations in xkb plugin:
+### About keyboard options translations in xkb plugin:
 
 The 'xkb' plugin can use translations from language packs that are present
     in many distributions. To use it you should have language pack which
