@@ -61,7 +61,6 @@ pkglib_LTLIBRARIES = $(DYNAMIC_PLUGINS)
 
 EXTRA_LTLIBRARIES = \
 	batt.la \
-	cpu.la \
 	cpufreq.la \
 	deskno.la \
 	indicator.la \
@@ -81,9 +80,6 @@ batt_la_SOURCES = \
 	batt/batt.c \
 	batt/batt_sys.c
 batt_la_CFLAGS = -I$(srcdir)/batt
-
-# cpu
-cpu_la_SOURCES = cpu/cpu.c
 
 # cpufreq
 cpufreq_la_SOURCES = cpufreq/cpufreq.c

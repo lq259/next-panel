@@ -9,16 +9,15 @@ Optional development packages may be required to build some modules:
   `libasound2` (required to build 'volume' plugin for ALSA),
   `libiw` (required to build 'netstat' plugin),
   `libxml-2.0`, libcurl (required to build 'weather' plugin).
-  `libgtk` 2.20 or newer (required to build 'xkb' plugin).
   `libindicator` 0.3.0 ('indicator' plugin isn't built if missing),
 
 Configure and make:
 ```
-  ./configure                    # (run './configure --help' for more details)
+  ./configure --enable-gtk3 # (run './configure --help' for more details)
   make
 ```
-To install this program, three other packages are needed:
-  `menu-cache`, `libfm-gtk`, `lxmenu-data`.
+To install this program, two other packages are needed:
+  `menu-cache`, `lxmenu-data`.
 Please install them before installing lxpanel.
 
 ### There are 2 programs contained in this package.

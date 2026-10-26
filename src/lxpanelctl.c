@@ -45,19 +45,19 @@ static const char usage[] =
         "exit\t\t\texit lxpanel\n"
         "command <plugin> <cmd>\tsend a command to a plugin\n\n";
 
-static int get_cmd( const char* cmd )
+static int get_cmd(const char* cmd)
 {
-    if( ! strcmp( cmd, "menu") )
+    if (!strcmp(cmd, "menu"))
         return LXPANEL_CMD_SYS_MENU;
-    else if( ! strcmp( cmd, "run") )
+    else if (!strcmp(cmd, "run"))
         return LXPANEL_CMD_RUN;
-    else if( ! strcmp( cmd, "config") )
+    else if (!strcmp(cmd, "config"))
         return LXPANEL_CMD_CONFIG;
-    else if( ! strcmp( cmd, "restart") )
+    else if (!strcmp(cmd, "restart"))
         return LXPANEL_CMD_RESTART;
-    else if( ! strcmp( cmd, "exit") )
+    else if (!strcmp(cmd, "exit"))
         return LXPANEL_CMD_EXIT;
-    else if( ! strcmp( cmd, "command") )
+    else if (!strcmp(cmd, "command"))
         return LXPANEL_CMD_COMMAND;
     return -1;
 }
@@ -91,33 +91,26 @@ int main( int argc, char** argv )
     Window root;
     Atom cmd_atom;
     int cmd;
-    /* int restart; */
-    /* target of message, it's XClientMessageEvent::b[1]
-     * valid only if XClientMessageEvent::b[0] == LXPANEL_CMD_COMMAND */
     uint8_t target;
 
-    if( argc < 2 )
+    if (argc < 2)
     {
-        printf( usage );
+        printf(usage);
         return 1;
     }
 
-    /*
-    if( restart = !strcmp( argv[1], "restart" ) )
-        argv[1] = "exit";
-    */
-
-    if( ( cmd = get_cmd( argv[1] ) ) == -1 )
+    if ((cmd = get_cmd(argv[1])) == -1)
         return 1;
 
     if (cmd == LXPANEL_CMD_COMMAND && argc < 4)
     {
-        printf( usage );
+        printf(usage);
         return 1;
     }
 
     dpy = XOpenDisplay(display_name);
-    if (dpy == NULL) {
+    if (dpy == NULL)
+    {
         printf("Cant connect to display: %s\n", display_name);
         exit(1);
     }
@@ -143,7 +136,10 @@ int main( int argc, char** argv )
             i++;
         }
         else
+        {
             target = (EDGE_NONE << 4) + 0; /* edge: none, monitor: none */
+        }
+
         ev.xclient.data.b[1] = target;
         snprintf(&ev.xclient.data.b[2], 18, "%s\t%s", argv[i], argv[i+1]);
     }
@@ -153,11 +149,5 @@ int main( int argc, char** argv )
     XSync(dpy, False);
     XCloseDisplay(dpy);
 
-/*
-    if( restart ) {
-        system( PACKAGE_BIN_DIR "/lxpanel &" );
-    }
-*/
     return 0;
 }
-

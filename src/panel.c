@@ -98,11 +98,9 @@ static void lxpanel_finalize(GObject *object)
     LXPanel *self = LXPANEL(object);
     Panel *p = self->priv;
 
-    if( p->config_changed )
-        lxpanel_config_save( self );
+    if (p->config_changed) lxpanel_config_save(self);
     config_destroy(p->config);
 
-    //XFree(p->workarea);
     g_free( p->background_file );
     g_slist_free( p->system_menus );
 
@@ -118,17 +116,17 @@ static void panel_stop_gui(LXPanel *self)
     Display *xdisplay;
 
     g_debug("panel_stop_gui on '%s'", p->name);
-    if (p->autohide)
-        ah_stop(self);
+    if (p->autohide) ah_stop(self);
 
-    if (p->pref_dialog != NULL)
-        gtk_widget_destroy(p->pref_dialog);
+    if (p->pref_dialog != NULL) gtk_widget_destroy(p->pref_dialog);
+
     p->pref_dialog = NULL;
 
     if (p->plugin_pref_dialog != NULL)
+    {
         /* just close the dialog, it will do all required cleanup */
         gtk_dialog_response(GTK_DIALOG(p->plugin_pref_dialog), GTK_RESPONSE_CLOSE);
-
+    }
 
     if (p->initialized)
     {

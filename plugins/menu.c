@@ -111,24 +111,26 @@ menu_destructor(gpointer user_data)
 {
     menup *m = (menup *)user_data;
 
-    if( G_UNLIKELY( idle_loader ) )
+    if (G_UNLIKELY(idle_loader))
     {
-        g_source_remove( idle_loader );
+        g_source_remove(idle_loader);
         idle_loader = 0;
     }
 
     if (m->show_system_menu_idle)
+    {
         g_source_remove(m->show_system_menu_idle);
+    }
 
     g_signal_handlers_disconnect_matched(m->ds, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
                                          on_data_get, NULL);
     g_object_unref(G_OBJECT(m->ds));
     gtk_widget_destroy(m->menu);
 
-    if( m->menu_cache )
+    if (m->menu_cache)
     {
         menu_cache_remove_reload_notify(m->menu_cache, m->reload_notify);
-        menu_cache_unref( m->menu_cache );
+        menu_cache_unref(m->menu_cache);
     }
 
     g_free(m->fname);
@@ -141,9 +143,7 @@ static void
 spawn_app(GtkWidget *widget, gpointer data)
 {
     ENTER;
-    if (data) {
-        fm_launch_command_simple(NULL, NULL, 0, data, NULL);
-    }
+    if (data) fm_launch_command_simple(NULL, NULL, 0, data, NULL);
     RET();
 }
 
@@ -219,53 +219,6 @@ static void on_add_menu_item_to_desktop(GtkMenuItem* item, GtkWidget* mi)
     fm_path_list_unref(files);
 }
 
-/* TODO: add menu item to panel */
-#if 0
-static void on_add_menu_item_to_panel(GtkMenuItem* item, MenuCacheApp* app)
-{
-    /* Find a penel containing launchbar applet.
-     * The launchbar with most buttons will be choosen if
-     * there are several launchbar applets loaded.
-     */
-    GSList* l;
-    Plugin* lb = NULL;
-    int n_btns = -1;
-
-    for(l = all_panels; !lb && l; l = l->next)
-    {
-        Panel* panel = (Panel*)l->data;
-        GList* pl;
-        for(pl=panel->plugins; pl; pl = pl->next)
-        {
-            Plugin* plugin = (Plugin*)pl;
-            if( strcmp(plugin->class->type, "launchbar") == 0 )
-            {
-                /* FIXME: should we let the users choose which launcherbar to add the btn? */
-                break;
-#if 0
-                int n = launchbar_get_n_btns(plugin);
-                if( n > n_btns )
-                {
-                    lb = plugin;
-                    n_btns = n;
-                }
-#endif
-            }
-        }
-    }
-
-    if( ! lb ) /* launchbar is not currently in use */
-    {
-        /* FIXME: add a launchbar plugin to the panel which has a menu, too. */
-    }
-
-    if( lb )
-    {
-
-    }
-}
-#endif
-
 static void on_menu_item_properties(GtkMenuItem* item, GtkWidget* mi)
 {
     FmFileInfo *fi = g_object_get_qdata(G_OBJECT(mi), SYS_MENU_ITEM_ID);
@@ -276,64 +229,6 @@ static void on_menu_item_properties(GtkMenuItem* item, GtkWidget* mi)
     fm_file_info_list_unref(files);
 }
 
-#if 0
-/* This following function restore_grabs is taken from menu.c of
- * gnome-panel.
- */
-/*most of this function stolen from the real gtk_menu_popup*/
-static void restore_grabs(GtkWidget *w, gpointer data)
-{
-    GtkWidget *menu_item = data;
-    GtkMenu *menu = GTK_MENU(gtk_widget_get_parent(menu_item));
-    GtkWidget *xgrab_shell;
-    GtkWidget *parent;
-
-    /* Find the last viewable ancestor, and make an X grab on it
-    */
-    parent = GTK_WIDGET (menu);
-    xgrab_shell = NULL;
-    while (parent)
-    {
-        gboolean viewable = TRUE;
-        GtkWidget *tmp = parent;
-
-        while (tmp)
-        {
-            if (!gtk_widget_get_mapped(tmp))
-            {
-                viewable = FALSE;
-                break;
-            }
-            tmp = gtk_widget_get_parent(tmp);
-        }
-
-        if (viewable)
-            xgrab_shell = parent;
-
-        parent = gtk_widget_get_parent(parent);
-    }
-
-    /*only grab if this HAD a grab before*/
-    if (xgrab_shell && (gtk_widget_has_focus(xgrab_shell)))
-     {
-        if (gdk_pointer_grab (gtk_widget_get_window(xgrab_shell), TRUE,
-                    GDK_BUTTON_PRESS_MASK |
-                    GDK_BUTTON_RELEASE_MASK |
-                    GDK_ENTER_NOTIFY_MASK |
-                    GDK_LEAVE_NOTIFY_MASK,
-                    NULL, NULL, 0) == 0)
-        {
-            if (gdk_keyboard_grab (gtk_widget_get_window(xgrab_shell), TRUE,
-                    GDK_CURRENT_TIME) == 0)
-                gtk_widget_grab_focus (xgrab_shell);
-            else
-                gdk_pointer_ungrab (GDK_CURRENT_TIME);
-        }
-    }
-    gtk_grab_add (GTK_WIDGET (menu));
-}
-#endif
-
 static void restore_submenu(GtkMenuItem *mi, GtkWidget *submenu)
 {
     g_signal_handlers_disconnect_by_func(mi, restore_submenu, submenu);
@@ -343,7 +238,7 @@ static void restore_submenu(GtkMenuItem *mi, GtkWidget *submenu)
 
 static gboolean on_menu_button_press(GtkWidget* mi, GdkEventButton* evt, menup* m)
 {
-    if( evt->button == 3 )  /* right */
+    if (evt->button == 3)  /* right */
     {
         GtkWidget* item;
         GtkMenu* p;
@@ -395,7 +290,7 @@ static gboolean on_menu_button_press(GtkWidget* mi, GdkEventButton* evt, menup* 
 static GtkWidget* create_item(MenuCacheItem *item, menup *m)
 {
     GtkWidget* mi;
-    if( menu_cache_item_get_type(item) == MENU_CACHE_TYPE_SEP )
+    if (menu_cache_item_get_type(item) == MENU_CACHE_TYPE_SEP)
     {
         mi = gtk_separator_menu_item_new();
         g_object_set_qdata(G_OBJECT(mi), SYS_MENU_ITEM_ID, (gpointer)1);
@@ -415,8 +310,8 @@ static GtkWidget* create_item(MenuCacheItem *item, menup *m)
         g_object_set_qdata_full(G_OBJECT(mi), SYS_MENU_ITEM_ID, fi,
                                 (GDestroyNotify)fm_file_info_unref);
         img = gtk_image_new();
-        gtk_image_menu_item_set_image( GTK_IMAGE_MENU_ITEM(mi), img );
-        if( menu_cache_item_get_type(item) == MENU_CACHE_TYPE_APP )
+        gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(mi), img);
+        if (menu_cache_item_get_type(item) == MENU_CACHE_TYPE_APP)
         {
             const char *comment = menu_cache_item_get_comment(item);
             if (comment != NULL)
@@ -430,105 +325,87 @@ static GtkWidget* create_item(MenuCacheItem *item, menup *m)
            the rest will be done by FmDndSrc after drag begins */
         gtk_drag_source_set(mi, GDK_BUTTON1_MASK, NULL, 0, GDK_ACTION_COPY);
     }
-    gtk_widget_show( mi );
+    gtk_widget_show(mi);
     return mi;
 }
 
-static int load_menu(menup* m, MenuCacheDir* dir, GtkWidget* menu, int pos )
+static int load_menu(menup* m, MenuCacheDir* dir, GtkWidget* menu, int pos)
 {
-    GSList * l;
-    /* number of visible entries */
-    gint count = 0;
-#if MENU_CACHE_CHECK_VERSION(0, 4, 0)
+    GSList *l;
     GSList *children;
-# if MENU_CACHE_CHECK_VERSION(0, 5, 0)
-#  if !MENU_CACHE_CHECK_VERSION(1, 0, 0)
-    char *kfpath;
-    GKeyFile *kf;
-#  endif
-    if (!menu_cache_dir_is_visible(dir)) /* directory is hidden, ignore children */
-        return 0;
-#  if !MENU_CACHE_CHECK_VERSION(1, 0, 0)
-    /* version 1.0.0 has NoDisplay checked internally */
-    kfpath = menu_cache_item_get_file_path(MENU_CACHE_ITEM(dir));
-    kf = g_key_file_new();
-    /* for version 0.5.0 we enable hidden so should test NoDisplay flag */
-    if (kfpath && g_key_file_load_from_file(kf, kfpath, 0, NULL) &&
-        g_key_file_get_boolean(kf, "Desktop Entry", "NoDisplay", NULL))
-        count = -1;
-    g_free(kfpath);
-    g_key_file_free(kf);
-    if (count < 0) /* directory is hidden, ignore children */
-        return 0;
-#  endif /* < 1.0.0 */
-# endif /* < 0.5.0 */
+    gint count = 0;
+
+    /* menu-cache >= 1.0.0 handles hidden/NoDisplay internally */
+    if (!menu_cache_dir_is_visible(dir)) return 0;
+
     children = menu_cache_dir_list_children(dir);
     for (l = children; l; l = l->next)
-#else /* < 0.4.0 */
-    for( l = menu_cache_dir_get_children(dir); l; l = l->next )
-#endif
     {
-        MenuCacheItem* item = MENU_CACHE_ITEM(l->data);
+        MenuCacheItem *item = MENU_CACHE_ITEM(l->data);
 
-        gboolean is_visible = ((menu_cache_item_get_type(item) != MENU_CACHE_TYPE_APP) ||
-			       (panel_menu_item_evaluate_visibility(item, m->visibility_flags)));
+        gboolean is_visible =
+            (menu_cache_item_get_type(item) != MENU_CACHE_TYPE_APP) ||
+            panel_menu_item_evaluate_visibility(item, m->visibility_flags);
 
-	if (is_visible)
-	{
-            GtkWidget * mi = create_item(item, m);
-	    count++;
+        if (!is_visible) continue;
+
+        GtkWidget *mi = create_item(item, m);
+        if (mi != NULL)
+        {
+            count++;
+            gtk_menu_shell_insert(GTK_MENU_SHELL(menu), mi, pos);
+            if (pos >= 0) pos++;
+        }
+
+        if (menu_cache_item_get_type(item) == MENU_CACHE_TYPE_DIR)
+        {
+            GtkWidget *sub = gtk_menu_new();
+            gint s_count = load_menu(m, MENU_CACHE_DIR(item), sub, -1);
+
             if (mi != NULL)
-                gtk_menu_shell_insert( (GtkMenuShell*)menu, mi, pos );
-            if( pos >= 0 )
-                ++pos;
-	    /* process subentries */
-	    if (menu_cache_item_get_type(item) == MENU_CACHE_TYPE_DIR)
-	    {
-                GtkWidget* sub = gtk_menu_new();
-		/*  always pass -1 for position */
-		gint s_count = load_menu( m, MENU_CACHE_DIR(item), sub, -1 );
-                if (s_count)
-		    gtk_menu_item_set_submenu( GTK_MENU_ITEM(mi), sub );
-		else
-		{
-		    /* don't keep empty submenus */
-		    gtk_widget_destroy( sub );
-		    gtk_widget_destroy( mi );
-		    if (pos > 0)
-			pos--;
-		}
-	    }
-	}
+            {
+                if (s_count > 0)
+                {
+                    gtk_menu_item_set_submenu(GTK_MENU_ITEM(mi), sub);
+                }
+                else
+                {
+                    gtk_widget_destroy(sub);
+                    gtk_widget_destroy(mi);
+                    if (pos > 0) pos--;
+                }
+            }
+            else
+            {
+                gtk_widget_destroy(sub);
+            }
+        }
     }
-#if MENU_CACHE_CHECK_VERSION(0, 4, 0)
-    g_slist_foreach(children, (GFunc)menu_cache_item_unref, NULL);
-    g_slist_free(children);
-#endif
+
+    g_slist_free_full(children, (GDestroyNotify)menu_cache_item_unref);
     return count;
 }
 
-
-
-static gboolean sys_menu_item_has_data( GtkMenuItem* item )
+static gboolean sys_menu_item_has_data(GtkMenuItem* item)
 {
-   return (g_object_get_qdata( G_OBJECT(item), SYS_MENU_ITEM_ID ) != NULL);
+   return (g_object_get_qdata(G_OBJECT(item), SYS_MENU_ITEM_ID) != NULL);
 }
 
 static void _unload_old_icons(GtkMenu* menu, GtkIconTheme* theme, menup* m)
 {
     GList *children, *child;
     GtkMenuItem* item;
-    GtkWidget* sub_menu=NULL;
+    GtkWidget* sub_menu = NULL;
 
     children = gtk_container_get_children( GTK_CONTAINER(menu) );
-    for( child = children; child; child = child->next )
+    for (child = children; child; child = child->next)
     {
-        item = GTK_MENU_ITEM( child->data );
-        if( sys_menu_item_has_data( item ) )
+        item = GTK_MENU_ITEM(child->data);
+        if (sys_menu_item_has_data(item))
         {
             GtkImage* img;
-            item = GTK_MENU_ITEM( child->data );
-            if( GTK_IS_IMAGE_MENU_ITEM(item) )
+            item = GTK_MENU_ITEM(child->data);
+            if (GTK_IS_IMAGE_MENU_ITEM(item))
             {
 	        img = GTK_IMAGE(gtk_image_menu_item_get_image(GTK_IMAGE_MENU_ITEM(item)));
                 gtk_image_clear(img);
@@ -536,7 +413,7 @@ static void _unload_old_icons(GtkMenu* menu, GtkIconTheme* theme, menup* m)
 		    on_menu_item_map(GTK_WIDGET(item), m);
             }
         }
-        else if( ( sub_menu = gtk_menu_item_get_submenu( item ) ) )
+        else if ((sub_menu = gtk_menu_item_get_submenu(item)))
         {
 	    _unload_old_icons(GTK_MENU(sub_menu), theme, m);
         }
@@ -566,20 +443,13 @@ static void sys_menu_insert_items( menup* m, GtkMenu* menu, int position )
     MenuCacheDir* dir;
     guint change_handler;
 
-    if( G_UNLIKELY( SYS_MENU_ITEM_ID == 0 ) )
+    if (G_UNLIKELY(SYS_MENU_ITEM_ID == 0))
         SYS_MENU_ITEM_ID = g_quark_from_static_string( "SysMenuItem" );
 
-#if MENU_CACHE_CHECK_VERSION(0, 4, 0)
-    dir = menu_cache_dup_root_dir(m->menu_cache);
-#else
     dir = menu_cache_get_root_dir( m->menu_cache );
-#endif
-    if(dir)
+    if (dir)
     {
         load_menu( m, dir, GTK_WIDGET(menu), position );
-#if MENU_CACHE_CHECK_VERSION(0, 4, 0)
-        menu_cache_item_unref(MENU_CACHE_ITEM(dir));
-#endif
     }
     else /* menu content is empty */
     {
@@ -595,38 +465,39 @@ static void sys_menu_insert_items( menup* m, GtkMenu* menu, int position )
 
 
 static void
-reload_system_menu( menup* m, GtkMenu* menu )
+reload_system_menu(menup* m, GtkMenu* menu)
 {
     GList *children, *child;
     GtkMenuItem* item;
     GtkWidget* sub_menu;
     gint idx;
 
-    children = gtk_container_get_children( GTK_CONTAINER(menu) );
-    for( child = children, idx = 0; child; child = child->next, ++idx )
+    children = gtk_container_get_children(GTK_CONTAINER(menu));
+    for (child = children, idx = 0; child; child = child->next, ++idx)
     {
-        item = GTK_MENU_ITEM( child->data );
-        if( sys_menu_item_has_data( item ) )
+        item = GTK_MENU_ITEM(child->data);
+        if (sys_menu_item_has_data(item))
         {
             do
             {
                 item = GTK_MENU_ITEM( child->data );
                 child = child->next;
                 gtk_widget_destroy( GTK_WIDGET(item) );
-            }while( child && sys_menu_item_has_data( child->data ) );
-            sys_menu_insert_items( m, menu, idx );
-            if( ! child )
-                break;
+            } while (child && sys_menu_item_has_data(child->data));
+
+            sys_menu_insert_items(m, menu, idx);
+
+            if (!child) break;
         }
-        else if( ( sub_menu = gtk_menu_item_get_submenu( item ) ) )
+        else if ((sub_menu = gtk_menu_item_get_submenu(item)))
         {
-            reload_system_menu( m, GTK_MENU(sub_menu) );
+            reload_system_menu(m, GTK_MENU(sub_menu));
         }
     }
-    g_list_free( children );
+    g_list_free(children);
 }
 
-static void show_menu( GtkWidget* widget, menup* m, int btn, guint32 time )
+static void show_menu(GtkWidget* widget, menup* m, int btn, guint32 time)
 {
     gtk_menu_popup(GTK_MENU(m->menu),
                    NULL, NULL,
@@ -675,24 +546,24 @@ make_button(menup *m, const gchar *fname, const gchar *name, GdkColor* tint, Gtk
     ENTER;
     m->menu = menu;
 
-    if( name )
+    if (name)
     {
         /* load the name from *.directory file if needed */
-        if( g_str_has_suffix( name, ".directory" ) )
+        if (g_str_has_suffix(name, ".directory"))
         {
             GKeyFile* kf = g_key_file_new();
             char* dir_file = g_build_filename( "desktop-directories", name, NULL );
-            if( g_key_file_load_from_data_dirs( kf, dir_file, NULL, 0, NULL ) )
+            if (g_key_file_load_from_data_dirs(kf, dir_file, NULL, 0, NULL))
             {
-                title = g_key_file_get_locale_string( kf, "Desktop Entry", "Name", NULL, NULL );
+                title = g_key_file_get_locale_string(kf, "Desktop Entry", "Name", NULL, NULL);
             }
-            g_free( dir_file );
-            g_key_file_free( kf );
+            g_free(dir_file);
+            g_key_file_free(kf);
         }
 
-        m->img = lxpanel_button_new_for_icon(m->panel, fname, tint, title ? title : name);
+        m->img = lxpanel_button_new_for_icon(m->panel, fname, tint, (title) ? title : name);
 
-        g_free( title );
+        g_free(title);
     }
     else
     {
@@ -706,7 +577,6 @@ make_button(menup *m, const gchar *fname, const gchar *name, GdkColor* tint, Gtk
     RET(m->img);
 }
 
-/* those were in configurator.c initially but it's safer to have those here */
 typedef struct {
     char *name;
     char *disp_name;
@@ -714,7 +584,6 @@ typedef struct {
 } Command;
 
 static Command commands[] = {
-    //{ "configure", N_("Preferences"), configure },
     { "run", N_("Run"), gtk_run },
     { "restart", N_("Restart"), restart },
     { "logout", N_("Logout"), logout },
@@ -747,7 +616,7 @@ read_item(menup *m, config_setting_t *s)
         }
     }
     /* menu button */
-    if( cmd_entry ) /* built-in commands */
+    if (cmd_entry) /* built-in commands */
     {
         item = gtk_image_menu_item_new_with_label( _(cmd_entry->disp_name) );
         g_signal_connect(G_OBJECT(item), "activate", (GCallback)run_command, cmd_entry->cmd);

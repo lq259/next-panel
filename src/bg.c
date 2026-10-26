@@ -37,7 +37,6 @@
 
 #include "bg.h"
 
-//#define DEBUG
 #include "dbg.h"
 
 enum {
@@ -77,7 +76,8 @@ fb_bg_get_type (void)
 {
     static GType object_type = 0;
 
-    if (!object_type) {
+    if (!object_type)
+    {
         static const GTypeInfo object_info = {
             sizeof (FbBgClass),
             (GBaseInitFunc) NULL,
@@ -90,8 +90,7 @@ fb_bg_get_type (void)
             (GInstanceInitFunc) fb_bg_init,
         };
 
-        object_type = g_type_register_static (
-            G_TYPE_OBJECT, "FbBg", &object_info, 0);
+        object_type = g_type_register_static (G_TYPE_OBJECT, "FbBg", &object_info, 0);
     }
 
     return object_type;
@@ -132,7 +131,8 @@ fb_bg_init (FbBg *bg)
     gcv.ts_y_origin = 0;
     gcv.fill_style = FillTiled;
     mask = GCTileStipXOrigin | GCTileStipYOrigin | GCFillStyle;
-    if (bg->pixmap != None) {
+    if (bg->pixmap != None)
+    {
         gcv.tile = bg->pixmap;
         mask |= GCTile ;
     }
@@ -158,7 +158,8 @@ fb_bg_get_xrootpmap(FbBg *bg)
     Pixmap ret = None;
 
     ENTER;
-    if (bg->id) {
+    if (bg->id)
+    {
         int  act_format, c = 2 ;
         u_long  nitems ;
         u_long  bytes_after ;
@@ -167,9 +168,11 @@ fb_bg_get_xrootpmap(FbBg *bg)
 
         do {
             if (XGetWindowProperty(bg->dpy, bg->xroot, bg->id, 0, 1,
-                      False, XA_PIXMAP, &ret_type, &act_format,
-                      &nitems, &bytes_after, &prop) == Success) {
-                if (ret_type == XA_PIXMAP) {
+                                   False, XA_PIXMAP, &ret_type, &act_format,
+                                   &nitems, &bytes_after, &prop) == Success)
+            {
+                if (ret_type == XA_PIXMAP)
+                {
                     ret = *((Pixmap *)prop);
                     XFree(prop);
                     break;
@@ -190,19 +193,20 @@ fb_bg_get_xroot_pix_for_win(FbBg *bg, GtkWidget *widget)
     Pixmap bgpix;
     GdkPixmap *gbgpix;
     guint  width, height, border, depth;
-    int  x, y;
+    int x, y;
 
     ENTER;
     win = GDK_WINDOW_XWINDOW(gtk_widget_get_window(widget));
-    if (!XGetGeometry(bg->dpy, win, &dummy, &x, &y, &width, &height, &border,
-              &depth)) {
+    if (!XGetGeometry(bg->dpy, win, &dummy, &x, &y, &width, &height, &border, &depth))
+    {
         g_warning("XGetGeometry failed\n");
         RET(NULL);
     }
     XTranslateCoordinates(bg->dpy, win, bg->xroot, 0, 0, &x, &y, &dummy);
     DBG("win=%x %dx%d%+d%+d\n", win, width, height, x, y);
     gbgpix = gdk_pixmap_new(NULL, width, height, depth);
-    if (!gbgpix) {
+    if (!gbgpix)
+    {
         g_critical("gdk_pixmap_new failed");
         RET(NULL);
     }
@@ -236,7 +240,8 @@ fb_bg_changed(FbBg *bg)
 {
     ENTER;
     bg->pixmap = fb_bg_get_xrootpmap(bg);
-    if (bg->pixmap != None) {
+    if (bg->pixmap != None)
+    {
         XGCValues  gcv;
 
         gcv.tile = bg->pixmap;
@@ -259,11 +264,13 @@ FbBg *fb_bg_get_for_display(void)
     if (!default_bg)
     {
         default_bg = fb_bg_new();
-        g_object_add_weak_pointer( G_OBJECT(default_bg),
-                (gpointer)&default_bg );
+        g_object_add_weak_pointer(G_OBJECT(default_bg),
+                                  (gpointer)&default_bg);
     }
     else
+    {
         g_object_ref(default_bg);
+    }
     RET(default_bg);
 }
 
@@ -276,7 +283,8 @@ fb_bg_get_pix_from_file(GtkWidget *widget, const char *filename)
     GdkPixmap *pixmap;
 
     pixbuf = gdk_pixbuf_new_from_file(filename, NULL);
-    if (!pixbuf) {
+    if (!pixbuf)
+    {
         GtkStyle *style = gtk_widget_get_style(widget);
         if (style->bg_pixmap[0])
             g_object_ref(style->bg_pixmap[0]);
