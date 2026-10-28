@@ -1,4 +1,5 @@
 # Next-panel is a lightweight X11 desktop panel.
+Note! Temporary Name, do not sue!
 
 ## Compiling
 To build this program you need these development packages:
@@ -22,16 +23,16 @@ Please install them before installing lxpanel.
 
 ### There are 2 programs contained in this package.
 
-1. next-panel: the panel
+1. lxpanel: the panel
 
-2. next-panelctl:
+2. lxpanelctl:
    
    the controller of next-panel, can be used to control next-panel in 
-   other programs.  The best place to use `next-panelctl` is by far 
+   other programs.  The best place to use `lxpanelctl` is by far 
    the numerous key bindings provided by window managers.
-   When the key combination is pressed, call `next-panelctl` to popup
+   When the key combination is pressed, call `lxpanelctl` to popup
    system menu, or to open run dialog in `next-panel`.
-   Run `next-panelctl` without any argument to see what command it 
+   Run `lxpanelctl` without any argument to see what command it 
    currently recognizes.
 
 
